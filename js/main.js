@@ -55,7 +55,7 @@ function drawAdvancedBoard(queensState, boardElem, highlightedColumn) {
                 const container = document.createElement('div');
                 container.classList.add('queen-container');
 
-                // MODIFICAÇÃO CRUCIAL: Só coloca a classe de animação se for a coluna que mudou
+               
                 if (col === highlightedColumn) {
                     container.classList.add('queen-move-animation');
                 }
@@ -97,7 +97,9 @@ function initializeApplication() {
     dom.txtStatus.textContent = "Pronto";
     dom.txtStatus.style.color = "black";
     dom.decisionLog.innerHTML = '<div class="log-entry">Novo tabuleiro estilo xadrez gerado.</div>';
-    
+
+
+    // Configura a posição inicial, espalha uma rainha por coluna em uma linha aleatória
     appState.queens = [];
     for (let col = 0; col < appState.N; col++) {
         appState.queens.push(Math.floor(Math.random() * appState.N));
@@ -120,7 +122,8 @@ function runSolverStep() {
     dom.txtIterations.textContent = appState.iterations;
 
     const currentConflicts = calculateConflicts(appState.queens);
-
+    
+// Condição de vitória: se o total de conflitos for zero, nenhuma rainha se ataca
     if (currentConflicts === 0) {
         clearTimeout(appState.timeoutId);
         dom.txtStatus.textContent = "Sucesso!";
@@ -136,7 +139,7 @@ function runSolverStep() {
     if (result.action === "move") {
         const match = result.details.match(/coluna (\d+)/);
         if (match) {
-            appState.lastMovedColumn = parseInt(match[1]); // Marca qual coluna mudou
+            appState.lastMovedColumn = parseInt(match[1]); 
         }
         
         appState.queens = result.state;
@@ -146,7 +149,9 @@ function runSolverStep() {
         
         appState.timeoutId = setTimeout(runSolverStep, appState.speed);
     } else if (result.action === "restart") {
-        appState.lastMovedColumn = null; // No restart, ninguém ganha animação individual
+        appState.lastMovedColumn = null; 
+        // Máximo Local: o algoritmo travou porque qualquer movimento vai aumentar ou manter os conflitos.
+        // Solução: ativa o 'Random Restart' para embaralhar o tabuleiro e tentar um novo caminho.
         logDecision("Preso em Máximo Local. Nenhuma jogada melhora a atual posição.", "warning");
         logDecision("Aplicando Random Restart (Embaralhando Rainhas)...", "warning");
         
