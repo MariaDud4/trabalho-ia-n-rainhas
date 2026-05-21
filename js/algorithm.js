@@ -19,7 +19,7 @@ function calculateConflicts(state) {
 }
 
 /*
- * Executa uma iteração do Hill Climbing (Subida de Encosta).
+Testa todas as casas possíveis para descobrir qual movimento reduz mais os conflitos.
  */
 function getNextHillClimbingState(currentState) {
     const N = currentState.length;
@@ -28,26 +28,31 @@ function getNextHillClimbingState(currentState) {
     let bestState = [...currentState];
     let bestConflicts = currentConflicts;
     let improvements = [];
-
+    
+// Passa de coluna em coluna testando novos movimentos
     for (let col = 0; col < N; col++) {
         const originalRow = currentState[col];
         
         for (let row = 0; row < N; row++) {
             if (row === originalRow) continue;
 
+            // Faz uma jogada simulada e calcula o impacto no tabuleiro
             currentState[col] = row;
             const testConflicts = calculateConflicts(currentState);
 
+            // Achou uma jogada melhor que todas as anteriores: reseta a lista e foca nela
             if (testConflicts < bestConflicts) {
                 bestConflicts = testConflicts;
                 improvements = [{ col, row, fromRow: originalRow }];
-            } else if (testConflicts === bestConflicts && testConflicts < currentConflicts) {
+            }
+            // Achou uma jogada tão boa quanto a melhor atual: adiciona como opção de escolha
+            else if (testConflicts === bestConflicts && testConflicts < currentConflicts) {
                 improvements.push({ col, row, fromRow: originalRow });
             }
         }
         currentState[col] = originalRow;
     }
-
+// Se encontrou alguma jogada que melhore o tabuleiro, aplica o movimento
     if (improvements.length > 0) {
         const choice = improvements[Math.floor(Math.random() * improvements.length)];
         bestState[choice.col] = choice.row;
