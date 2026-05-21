@@ -1,6 +1,5 @@
 /**
- * Calcula o número de pares de rainhas em conflito mútuo.
- * (Esta é a nossa Heurística)
+Cálculo da heurística
  */
 function calculateConflicts(state) {
     const N = state.length;
@@ -19,7 +18,7 @@ function calculateConflicts(state) {
     return conflicts;
 }
 
-/**
+/*
  * Executa uma iteração do Hill Climbing (Subida de Encosta).
  */
 function getNextHillClimbingState(currentState) {
